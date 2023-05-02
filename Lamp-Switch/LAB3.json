@@ -1,0 +1,262 @@
+[
+    {
+        "id": "7cb17ea85385cbb5",
+        "type": "tab",
+        "label": "LAB3",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "5ee2588ba51b1808",
+        "type": "function",
+        "z": "7cb17ea85385cbb5",
+        "name": "forcast",
+        "func": "let lat = \"37.328128\";\nlet lon = \"126.689262\";\nlet start = new Date();\nlet end = new Date();\nstart.setHours(0, 0, 0, 0);\nend.setHours(23, 59, 59, 0);\nend = end.getTime() / 1000;\nstart = start.getTime() / 1000;\nmsg.url = 'http://api.openweathermap.org/data/2.5/air_pollution/forecast?appid=e245a13367c22432af42eaac26447255';\nmsg.url += '&lat=' + lat + '&lon=' + lon + '&start=' + start + '&end=' + end; \nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 280,
+        "wires": [
+            [
+                "9d47b17c4b9315bb"
+            ]
+        ]
+    },
+    {
+        "id": "6457149ed89c8385",
+        "type": "inject",
+        "z": "7cb17ea85385cbb5",
+        "name": "generator",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 340,
+        "y": 280,
+        "wires": [
+            [
+                "5ee2588ba51b1808"
+            ]
+        ]
+    },
+    {
+        "id": "9d47b17c4b9315bb",
+        "type": "http request",
+        "z": "7cb17ea85385cbb5",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 650,
+        "y": 280,
+        "wires": [
+            [
+                "ee89e5395cc6f0db",
+                "14fe8a531892ee2d"
+            ]
+        ]
+    },
+    {
+        "id": "25325adb5e6a86d7",
+        "type": "debug",
+        "z": "7cb17ea85385cbb5",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "ee89e5395cc6f0db",
+        "type": "function",
+        "z": "7cb17ea85385cbb5",
+        "name": "parse",
+        "func": "let airPollutionData = JSON.parse(msg.payload);\nlet morning = [];\nlet afternoon = [];\nlet evening = [];\n\nif (airPollutionData.list) {\n    for (let i = 0; i < airPollutionData.list.length; i++) {\n        let dt = new Date(airPollutionData.list[i].dt * 1000);\n        let hour = dt.getHours();\n        if (hour >= 0 && hour < 12) {\n            morning.push(airPollutionData.list[i].main.aqi);\n        }\n        if (hour >= 12 && hour < 18) {\n            afternoon.push(airPollutionData.list[i].main.aqi);\n        }\n        if (hour >= 18 && hour < 24) {\n            evening.push(airPollutionData.list[i].main.aqi);\n        }\n    }\n}\n\n\nif (morning.length > 0) {\n    var morningavgAirPollution = morning.reduce((a, b) => a + b) / morning.length;\n    morningavgAirPollution = morningavgAirPollution.toFixed(2);\n} else {\n    msg.payload = \"No data\";\n}\n\nif (afternoon.length > 0) {\n    var afternoonavgAirPollution = afternoon.reduce((a, b) => a + b) / afternoon.length;\n    afternoonavgAirPollution = afternoonavgAirPollution.toFixed(2);\n} else {\n    msg.payload = \"No data\";\n}\n\nif (evening.length > 0) {\n    var eveningavgAirPollution = evening.reduce((a, b) => a + b) / evening.length;\n    eveningavgAirPollution = eveningavgAirPollution.toFixed(2);\n} else {\n    msg.payload = \"No data\";\n}\nmsg.payload = {\n    \"morning\":morningavgAirPollution,\n    \"afternoon\": afternoonavgAirPollution,\n    \"evening\": eveningavgAirPollution\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 280,
+        "wires": [
+            [
+                "25325adb5e6a86d7",
+                "fc4978201060fafc",
+                "8ddb859d5dd5f1ea",
+                "86451c08fe46867d"
+            ]
+        ]
+    },
+    {
+        "id": "fc4978201060fafc",
+        "type": "ui_gauge",
+        "z": "7cb17ea85385cbb5",
+        "name": "",
+        "group": "81328dc7f9030c88",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Morning",
+        "label": "AQI Levels",
+        "format": "{{msg.payload.morning}}",
+        "min": 0,
+        "max": "5",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1040,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "8ddb859d5dd5f1ea",
+        "type": "ui_gauge",
+        "z": "7cb17ea85385cbb5",
+        "name": "",
+        "group": "81328dc7f9030c88",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Afternoon",
+        "label": "AQI Levels",
+        "format": "{{msg.payload.afternoon}}",
+        "min": 0,
+        "max": "5",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1040,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "86451c08fe46867d",
+        "type": "ui_gauge",
+        "z": "7cb17ea85385cbb5",
+        "name": "",
+        "group": "81328dc7f9030c88",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Evening",
+        "label": "AQI Levels",
+        "format": "{{msg.payload.evening}}",
+        "min": 0,
+        "max": "5",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1040,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "952a873736079b0a",
+        "type": "debug",
+        "z": "7cb17ea85385cbb5",
+        "name": "All Check",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "14fe8a531892ee2d",
+        "type": "function",
+        "z": "7cb17ea85385cbb5",
+        "name": "check",
+        "func": "msg.payload = JSON.parse(msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 440,
+        "wires": [
+            [
+                "952a873736079b0a"
+            ]
+        ]
+    },
+    {
+        "id": "81328dc7f9030c88",
+        "type": "ui_group",
+        "name": "group1",
+        "tab": "5a40af36b735d964",
+        "order": 1,
+        "disp": false,
+        "width": "16",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5a40af36b735d964",
+        "type": "ui_tab",
+        "name": "Tab 1",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
