@@ -7,8 +7,8 @@ void setup()
 {
     Serial.begin(115200);
     mySerial.begin(9600); //기존 9600이여서 다른 통신속도를 사용해야함
-}S
- 
+}
+
 void loop()
 {
   while(Serial.available()){
