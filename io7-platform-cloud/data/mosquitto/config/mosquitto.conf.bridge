@@ -1,0 +1,40 @@
+# Place your local configuration in /etc/mosquitto/conf.d/
+#
+# A full description of the configuration file is at
+# /usr/share/doc/mosquitto/examples/mosquitto.conf.example
+listener 1883
+allow_anonymous true
+
+#pid_file /var/run/mosquitto.pid
+
+persistence false
+persistence_location /mosquitto/data/
+
+log_dest file /mosquitto/mosquitto.log
+
+include_dir /mosquitto/config/conf.d
+
+connection bridge-to-watsoniot
+bridge_insecure false
+bridge_cafile /mosquitto/config/ca_certificates/watson_iot.crt
+address y0y2st.messaging.internetofthings.ibmcloud.com:8883
+
+cleansession false
+try_private false
+bridge_attempt_unsubscribe false
+notifications true
+remote_username use-token-auth
+remote_password 96+n(Nb9HOnZ2oJm5y
+remote_clientid g:ents99:temp:tempgw
+notification_topic iot-2/type/temp/id/tempgw/evt/status/fmt/raw
+topic iot-2/type/+/id/+/cmd/+/fmt/+ in iot-2/type/+/id/+/cmd/+/fmt/+
+topic iot-2/type/+/id/+/evt/+/fmt/+ out iot-2/type/+/id/+/evt/+/fmt/+
+topic iotdm-1/type/+/id/+/+ in iotdm-1/type/+/id/+/+
+topic iotdevice-1/type/+/id/+/mgmt/manage out iotdevice-1/type/+/id/+/mgmt/manage
+topic iotdevice-1/type/+/id/+/response/ in iotdevice-1/type/+/id/+/response/
+topic iotdm-1/type/+/id/+/mgmt/initiate/device/reboot in iotdm-1/type/+/id/+/mgmt/initiate/device/reboot
+topic iotdm-1/type/+/id/+/device/update in iotdm-1/type/+/id/+/device/update
+topic iotdm-1/type/+/id/+/mgmt/initiate/device/factory_reset in iotdm-1/type/+/id/+/mgmt/initiate/device/factory_reset
+
+connection_messages true
+

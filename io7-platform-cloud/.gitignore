@@ -1,0 +1,8 @@
+setup/mqtt_test/.venv
+setup/mqtt_test/iothub.crt
+data/redis/dump.rdb
+data/nodered/package-lock.json
+data/nodered/iothub.key
+data/nodered/iothub.crt
+data/mosquitto/config/certs/iothub.key
+data/mosquitto/config/certs/iothub.crt

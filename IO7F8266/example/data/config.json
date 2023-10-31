@@ -1,0 +1,11 @@
+{
+   "meta": {
+       "pubInterval": "5000"
+   },
+   "ssid": "yourAP",
+   "w_pw": "APPassword",
+   "broker": "your io7 cloud",
+   "devId": "neo",
+   "token": "neo",
+   "config": "done"
+}

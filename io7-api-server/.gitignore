@@ -1,0 +1,13 @@
+package-lock.json
+node_modules
+tsconfig.tsbuildinfo
+dist
+iothub.crt
+iothub.key
+data/db.json
+data/dynamic-security.json
+dynamic-security.json
+src/dynsec/admin_id.js
+data/user.json
+data/devices.json
+.vscode

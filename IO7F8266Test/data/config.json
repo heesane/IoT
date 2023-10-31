@@ -1,0 +1,13 @@
+{
+   "meta": {
+     "pubInterval": "30000",
+    "fprint": "4D 67 0E 66 D1 5C 57 4C 86 7A CD 66 22 C4 35 FE 23 85 A1 BF"
+   },
+   "ssid": "ssid",
+   "w_pw": "nopassword",
+   "broker": "172.20.10.8",
+   "devId": "client1",
+   "token": "client1token",
+    "fprint": "4D 67 0E 66 D1 5C 57 4C 86 7A CD 66 22 C4 35 FE 23 85 A1 BF",
+   "config": "done"
+ }
